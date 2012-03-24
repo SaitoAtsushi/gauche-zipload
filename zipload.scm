@@ -45,7 +45,7 @@
 
 (define (add-load-zip filename)
   (define (zip-load-path-hook archive relpath suffixes)
-    (and (equal? (sys-basename archive) filename)
+    (and (equal? archive filename)
          (member ".scm" suffixes)
          (call-with-input-file filename
            (^[port]
