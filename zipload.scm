@@ -43,23 +43,28 @@
     (unpack-skip #`"a,(x->string (zip-header-compressed-size header))"
                  :input port)))
 
+(define *load-zip* '())
+
 (define (add-load-zip filename)
-  (define (zip-load-path-hook archive relpath suffixes)
-    (and (equal? archive filename)
-         (member ".scm" suffixes)
-         (call-with-input-file filename
-           (^[port]
-             (if-let1 header (search-in-zip port relpath)
-               (let* ((body
-                       (read-block (zip-header-compressed-size header) port))
-                      (uncompressed
-                       ((if (zero? (logand 8 (zip-header-method header)))
-                            values
-                            (cut inflate-string <> :window-bits -15))
-                        body)))
-                 (cons relpath (^_ (open-input-string uncompressed))))
-               #f)))))
-  (push! *load-path* filename)
-  ((with-module gauche.internal %add-load-path-hook!)
-   zip-load-path-hook))
+  (push! *load-zip* filename)
+  (push! *load-path* filename))
+
+(define (zip-load-path-hook archive relpath suffixes)
+  (and (member archive *load-zip*)
+       (member ".scm" suffixes)
+       (call-with-input-file archive
+         (^[port]
+           (if-let1 header (search-in-zip port relpath)
+             (let* ((body
+                     (read-block (zip-header-compressed-size header) port))
+                    (uncompressed
+                     ((if (zero? (logand 8 (zip-header-method header)))
+                          values
+                          (cut inflate-string <> :window-bits -15))
+                      body)))
+               (cons relpath (^_ (open-input-string uncompressed))))
+             #f)))))
+
+((with-module gauche.internal %add-load-path-hook!)
+ zip-load-path-hook)
 
