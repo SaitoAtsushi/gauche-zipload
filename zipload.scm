@@ -45,9 +45,9 @@
 
 (define *load-zip* '())
 
-(define (add-load-zip filename)
+(define (add-load-zip filename :optional (afterp #f))
   (push! *load-zip* filename)
-  ((with-module gauche.internal %add-load-path) filename))
+  ((with-module gauche.internal %add-load-path) filename afterp))
 
 (define (zip-load-path-hook archive relpath suffixes)
   (and (member archive *load-zip*)
