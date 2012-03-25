@@ -19,7 +19,7 @@
   (filename-size)
   (ext-field-len)
   (filename)
-  (cursor))
+  )
 
 (define (read-header port)
   (let1 header (apply make-zip-header (unpack "VvvvVVVVvv" :input port))
