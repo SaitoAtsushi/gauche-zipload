@@ -1,0 +1,56 @@
+#+TITLE: About Gauche-zipload
+#+AUTHOR: SAITO Atsushi
+#+LANGUAGE: ja
+
+This is a library for Gauche.
+You can load directly from the ZIP archive by using the procedures in this library.
+
+* Prerequisites
+
+This module is using some features that are added after Gauche 0.9.3 release.
+
+* Install
+
+#+BEGIN_SRC sh
+    $ git clone git://github.com/SaitoAtsushi/gauche-zipload.git
+    $ cd gauche-zipload
+    $ ./DIST gen
+    $ ./configure
+    $ make
+    $ make -s check
+    $ [sudo] make install
+#+END_SRC
+
+* A simple example
+
+When the following three files is contained in a ZIP archive FOO.zip
+
+#+BEGIN_SRC scheme
+;; T1.scm
+(load "T2")
+(load "T3")
+(define (test-zipload) (list a b))
+#+END_SRC
+
+#+BEGIN_SRC scheme
+;; T2.scm
+(define a 'a)
+#+END_SRC
+
+#+BEGIN_SRC scheme
+;; T3.scm
+(define b 'b)
+#+END_SRC
+
+to load the T1 from this archive, run following.
+
+#+BEGIN_SRC scheme
+(add-load-zip "FOO.zip")
+(load "T1")
+#+END_SRC
+
+Calling add-load-zip with ZIP archive path is similar to call add-load-path with directory.
+
+* License
+
+Gauche-zipload is BSD style license. See also COPYING.
