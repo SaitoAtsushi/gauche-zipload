@@ -14,10 +14,9 @@ This module is using some features that are added after Gauche 0.9.3 release.
 #+BEGIN_SRC sh
     $ git clone git://github.com/SaitoAtsushi/gauche-zipload.git
     $ cd gauche-zipload
-    $ ./DIST gen
     $ ./configure
     $ make
-    $ make -s check
+    $ make check
     $ [sudo] make install
 #+END_SRC
 
