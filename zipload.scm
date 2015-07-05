@@ -33,12 +33,14 @@
           header)
         #f)))
 
-(define (search-in-zip port relpath)
+(define (search-in-zip port relpath suffixes)
   (do ((files '())
        (header (read-header port) (read-header port)))
       ((or (not header)
            (string=? relpath (zip-header-filename header))
-           (string=? #`",|relpath|.scm" (zip-header-filename header)))
+           (find (lambda(x)(string=? (string-append relpath x)
+                                     (zip-header-filename header)))
+                 suffixes))
        header)
     (unpack-skip #`"a,(x->string (zip-header-compressed-size header))"
                  :input port)))
@@ -51,10 +53,9 @@
 
 (define (zip-load-path-hook archive relpath suffixes)
   (and (member archive *load-zip*)
-       (member ".scm" suffixes)
        (call-with-input-file archive
          (^[port]
-           (if-let1 header (search-in-zip port relpath)
+           (if-let1 header (search-in-zip port relpath suffixes)
              (let* ((body
                      (read-block (zip-header-compressed-size header) port))
                     (uncompressed

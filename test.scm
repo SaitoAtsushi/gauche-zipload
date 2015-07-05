@@ -74,7 +74,7 @@
                    '(("T1.scm" "(load \"T2\")(load \"T3\")(load \"T4\")
                                 (define (test-zipload) (list a b c))" #t)
                      ("T2.scm" "(define a 'a)" #f)
-                     ("T3.scm" "(define b 'b)" #t)
+                     ("T3.sld" "(define b 'b)" #t)
                      ("T4.scm" "(define c 'c)" #f)))
        (add-load-zip "hoge.zip")
        (load "T1")
